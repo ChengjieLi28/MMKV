@@ -41,6 +41,8 @@
 #include <unordered_set>
 //#include <unistd.h>
 #include <cassert>
+#include <iostream>
+#include <ctime>
 
 #if defined(__aarch64__) && defined(__linux)
 #    include <asm/hwcap.h>
@@ -606,12 +608,17 @@ bool MMKV::set(const string &value, MMKVKey_t key) {
 }
 
 bool MMKV::set(const string &value, MMKVKey_t key, uint32_t expireDuration) {
+    std::time_t result = std::time(nullptr);
+    std::asctime(std::localtime(&result));
+
+    std::cout << "CPP SET Start time: " << result << std::endl;
     if (isKeyEmpty(key)) {
         return false;
     }
+    bool res;
     if (likely(!m_enableKeyExpire)) {
         assert(expireDuration == ExpireNever && "setting expire duration without calling enableAutoKeyExpire() first");
-        return setDataForKey(MMBuffer((void *) value.data(), value.length(), MMBufferNoCopy), key, true);
+        res = setDataForKey(MMBuffer((void *) value.data(), value.length(), MMBufferNoCopy), key, true);
     } else {
         MMBuffer data((void *) value.data(), value.length(), MMBufferNoCopy);
         if (data.length() > 0) {
@@ -622,8 +629,15 @@ bool MMKV::set(const string &value, MMKVKey_t key, uint32_t expireDuration) {
             output.writeRawLittleEndian32(UInt32ToInt32(time));
             data = std::move(tmp);
         }
-        return setDataForKey(std::move(data), key);
+        res = setDataForKey(std::move(data), key);
     }
+
+    std::time_t result2 = std::time(nullptr);
+    std::asctime(std::localtime(&result2));
+
+    std::cout << "CPP SET END time: " << result2 << std::endl;
+
+    return res;
 }
 
 bool MMKV::set(const MMBuffer &value, MMKVKey_t key) {
