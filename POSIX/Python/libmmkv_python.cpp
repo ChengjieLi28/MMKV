@@ -175,12 +175,16 @@ PYBIND11_MODULE(mmkv, m) {
                 py::arg("value"), py::arg("key"), py::arg("expireDuration"));
     //clsMMKV.def("set", (bool (MMKV::*)(const char*, const string&))(&MMKV::set), py::arg("value"), py::arg("key"));
     clsMMKV.def("set", (bool (MMKV::*)(const string &, const string &))(&MMKV::set),
+                py::call_guard<py::gil_scoped_release>(),
                 "encode an UTF-8 String/bytes value", py::arg("value"), py::arg("key"));
     clsMMKV.def("set", (bool (MMKV::*)(const string &, const string &, uint32_t))(&MMKV::set),
                 "encode an UTF-8 String/bytes value with expiration", py::arg("value"), py::arg("key"), py::arg("expireDuration"));
 #if PY_MAJOR_VERSION >= 3
     clsMMKV.def(
-        "set", [](MMKV &kv, const py::bytes &value, const string &key) { return kv.set(pyBytes2MMBuffer(value), key); },
+        "set", [](MMKV &kv, const py::bytes &value, const string &key) { 
+            py::gil_scoped_release release;
+            return kv.set(pyBytes2MMBuffer(value), key); 
+            },
         "encode a bytes value", py::arg("value"), py::arg("key"));
     clsMMKV.def(
         "set",
@@ -214,6 +218,7 @@ PYBIND11_MODULE(mmkv, m) {
     clsMMKV.def(
         "getBytes",
         [](MMKV &kv, const string &key, const py::bytes &defaultValue) {
+            py::gil_scoped_release release;
             MMBuffer result = kv.getBytes(key);
             if (result.length() > 0) {
                 return py::bytes((const char *) result.getPtr(), result.length());
