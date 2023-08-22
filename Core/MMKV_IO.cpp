@@ -562,7 +562,7 @@ bool MMKV::setDataForKey(MMBuffer &&data, MMKVKey_t key, bool isDataHolder) {
         return false;
     }
     SCOPED_LOCK(m_lock);
-    SCOPED_LOCK(m_exclusiveProcessLock);
+//    SCOPED_LOCK(m_exclusiveProcessLock);
     checkLoadData();
 
 #ifndef MMKV_DISABLE_CRYPT
