@@ -615,7 +615,7 @@ bool MMKV::set(const string &value, MMKVKey_t key) {
 }
 
 bool MMKV::set(const string &value, MMKVKey_t key, uint32_t expireDuration) {
-    std::cout << "CPP SET Start time: " << timeSinceEpochMillisec() << std::endl;
+//    std::cout << "CPP SET Start time: " << timeSinceEpochMillisec() << std::endl;
     if (isKeyEmpty(key)) {
         return false;
     }
@@ -639,7 +639,7 @@ bool MMKV::set(const string &value, MMKVKey_t key, uint32_t expireDuration) {
     std::time_t result2 = std::time(nullptr);
     std::asctime(std::localtime(&result2));
 
-    std::cout << "CPP SET END time: " << timeSinceEpochMillisec() << std::endl;
+//    std::cout << "CPP SET END time: " << timeSinceEpochMillisec() << std::endl;
 
     return res;
 }
