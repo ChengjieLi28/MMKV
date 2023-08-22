@@ -231,7 +231,6 @@ NSObject *MMKV::getObject(MMKVKey_t key, Class cls) {
         return nil;
     }
     SCOPED_LOCK(m_lock);
-    SCOPED_LOCK(m_sharedProcessLock);
     auto data = getDataForKey(key);
     if (data.length() > 0) {
         if (MiniPBCoder::isCompatibleClass(cls)) {
