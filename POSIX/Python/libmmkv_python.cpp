@@ -135,16 +135,16 @@ PYBIND11_MODULE(mmkv, m) {
     clsMMKV.def("mmapID", &MMKV::mmapID);
     clsMMKV.def_readonly("isInterProcess", &MMKV::m_isInterProcess);
 
-    clsMMKV.def("cryptKey", &MMKV::cryptKey);
-    clsMMKV.def("reKey", &MMKV::reKey,
-                "transform plain text into encrypted text, or vice versa with an empty cryptKey\n"
-                "Parameters:\n"
-                "  newCryptKey: 16 bytes at most",
-                py::arg("newCryptKey"));
-    clsMMKV.def("checkReSetCryptKey", &MMKV::checkReSetCryptKey,
-                "just reset cryptKey (will not encrypt or decrypt anything),\n"
-                "usually you should call this method after other process reKey() a multi-process mmkv",
-                py::arg("newCryptKey"));
+    // clsMMKV.def("cryptKey", &MMKV::cryptKey);
+    // clsMMKV.def("reKey", &MMKV::reKey,
+    //             "transform plain text into encrypted text, or vice versa with an empty cryptKey\n"
+    //             "Parameters:\n"
+    //             "  newCryptKey: 16 bytes at most",
+    //             py::arg("newCryptKey"));
+    // clsMMKV.def("checkReSetCryptKey", &MMKV::checkReSetCryptKey,
+    //             "just reset cryptKey (will not encrypt or decrypt anything),\n"
+    //             "usually you should call this method after other process reKey() a multi-process mmkv",
+    //             py::arg("newCryptKey"));
 
     // TODO: Doesn't work, why?
     // clsMMKV.def("set", py::overload_cast<bool, const string&>(&MMKV::set), py::arg("value"), py::arg("key"));
