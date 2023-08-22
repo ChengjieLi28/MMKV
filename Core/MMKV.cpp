@@ -43,6 +43,8 @@
 #include <cassert>
 #include <iostream>
 #include <ctime>
+#include <chrono>
+#include <cstdint>
 
 #if defined(__aarch64__) && defined(__linux)
 #    include <asm/hwcap.h>
@@ -77,6 +79,11 @@ MMKV_NAMESPACE_BEGIN
 static MMKVPath_t encodeFilePath(const string &mmapID, const MMKVPath_t &rootDir);
 bool endsWith(const MMKVPath_t &str, const MMKVPath_t &suffix);
 MMKVPath_t filename(const MMKVPath_t &path);
+
+uint64_t timeSinceEpochMillisec() {
+    using namespace std::chrono;
+    return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+}
 
 #ifndef MMKV_ANDROID
 MMKV::MMKV(const string &mmapID, MMKVMode mode, string *cryptKey, MMKVPath_t *rootPath)
@@ -608,10 +615,7 @@ bool MMKV::set(const string &value, MMKVKey_t key) {
 }
 
 bool MMKV::set(const string &value, MMKVKey_t key, uint32_t expireDuration) {
-    std::time_t result = std::time(nullptr);
-    std::asctime(std::localtime(&result));
-
-    std::cout << "CPP SET Start time: " << result << std::endl;
+    std::cout << "CPP SET Start time: " << timeSinceEpochMillisec() << std::endl;
     if (isKeyEmpty(key)) {
         return false;
     }
@@ -635,7 +639,7 @@ bool MMKV::set(const string &value, MMKVKey_t key, uint32_t expireDuration) {
     std::time_t result2 = std::time(nullptr);
     std::asctime(std::localtime(&result2));
 
-    std::cout << "CPP SET END time: " << result2 << std::endl;
+    std::cout << "CPP SET END time: " << timeSinceEpochMillisec() << std::endl;
 
     return res;
 }
